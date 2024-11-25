@@ -1,0 +1,10 @@
+E:\Development\XFSCardReaderSankyo\CardReader\CardReader\bin\Debug\CardReader.exe.config
+E:\Development\XFSCardReaderSankyo\CardReader\CardReader\bin\Debug\CardReader.exe
+E:\Development\XFSCardReaderSankyo\CardReader\CardReader\bin\Debug\CardReader.pdb
+E:\Development\XFSCardReaderSankyo\CardReader\CardReader\obj\Debug\CardReader.csproj.AssemblyReference.cache
+E:\Development\XFSCardReaderSankyo\CardReader\CardReader\obj\Debug\CardReader.Form1.resources
+E:\Development\XFSCardReaderSankyo\CardReader\CardReader\obj\Debug\CardReader.Properties.Resources.resources
+E:\Development\XFSCardReaderSankyo\CardReader\CardReader\obj\Debug\CardReader.csproj.GenerateResource.cache
+E:\Development\XFSCardReaderSankyo\CardReader\CardReader\obj\Debug\CardReader.csproj.CoreCompileInputs.cache
+E:\Development\XFSCardReaderSankyo\CardReader\CardReader\obj\Debug\CardReader.exe
+E:\Development\XFSCardReaderSankyo\CardReader\CardReader\obj\Debug\CardReader.pdb

@@ -16,5 +16,20 @@ namespace CardReader
         {
             InitializeComponent();
         }
+
+        private void WFSStartUp_Click(object sender, EventArgs e)
+        {
+            WFSStartUpResult.Text = "Ads";
+        }
+
+        private void WFSOpen_Click(object sender, EventArgs e)
+        {
+            WFSOpenResult.Text = "Ads";
+        }
+
+        private void WFSRegister_Click(object sender, EventArgs e)
+        {
+            WFSRegisterResult.Text = "Ads";
+        }
     }
 }
