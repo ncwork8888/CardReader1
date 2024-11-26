@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.WFSStartUp = new System.Windows.Forms.Button();
+            this.WFSStartUP = new System.Windows.Forms.Button();
             this.WFSOpen = new System.Windows.Forms.Button();
             this.WFSRegister = new System.Windows.Forms.Button();
             this.WFSStartUpResult = new System.Windows.Forms.TextBox();
@@ -38,13 +38,13 @@
             // 
             // WFSStartUp
             // 
-            this.WFSStartUp.Location = new System.Drawing.Point(55, 75);
-            this.WFSStartUp.Name = "WFSStartUp";
-            this.WFSStartUp.Size = new System.Drawing.Size(147, 25);
-            this.WFSStartUp.TabIndex = 0;
-            this.WFSStartUp.Text = "WFSStartUp";
-            this.WFSStartUp.UseVisualStyleBackColor = true;
-            this.WFSStartUp.Click += new System.EventHandler(this.WFSStartUp_Click);
+            this.WFSStartUP.Location = new System.Drawing.Point(55,75);
+            this.WFSStartUP.Name = "WFSStartUp";
+            this.WFSStartUP.Size = new System.Drawing.Size(147, 25);
+            this.WFSStartUP.TabIndex = 0;
+            this.WFSStartUP.Text = "WFSStartUp";
+            this.WFSStartUP.UseVisualStyleBackColor = true;
+            this.WFSStartUP.Click += new System.EventHandler(this.WFSStartUp_Click);
             // 
             // WFSOpen
             // 
@@ -89,6 +89,7 @@
             // 
             // Form1
             // 
+            this.Controls.Add(this.WFSStartUP);
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(631, 251);
@@ -97,7 +98,6 @@
             this.Controls.Add(this.WFSStartUpResult);
             this.Controls.Add(this.WFSRegister);
             this.Controls.Add(this.WFSOpen);
-            this.Controls.Add(this.WFSStartUp);
             this.Name = "Form1";
             this.Text = "Form1";
             this.ResumeLayout(false);
@@ -106,13 +106,13 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Button WFSStartUp;
+        private System.Windows.Forms.Button WFSStartUP;
         private System.Windows.Forms.Button WFSOpen;
         private System.Windows.Forms.Button WFSRegister;
         private System.Windows.Forms.TextBox WFSStartUpResult;
         private System.Windows.Forms.TextBox WFSOpenResult;
         private System.Windows.Forms.TextBox WFSRegisterResult;
+        
     }
 }
 
