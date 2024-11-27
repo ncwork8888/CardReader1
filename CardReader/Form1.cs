@@ -94,12 +94,12 @@ namespace CardReader
 
         [DllImport(@"C:\Windows\SysWOW64\msxfs.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public static extern int WFSAsyncExecute(
-            IntPtr hService,            // Handle to the service provider
-            uint dwCommand,             // Command to execute
-            uint lpCmdData,           // Data structure for the command
-            uint dwTimeOut,             // Timeout in milliseconds
-            IntPtr hWnd             // Window handle for completion message
-            //out uint lpRequestID        // Pointer to request ID for the operation
+            IntPtr hService,
+            uint dwCommand,
+            uint lpCmdData,
+            uint dwTimeOut,
+            IntPtr hWnd,
+            ref IntPtr lpRequestID
         );
 
 
@@ -375,16 +375,24 @@ namespace CardReader
 
             try
             {
-                uint dwCommand = 0xCF; // Replace with an actual command for your device
-                uint lpCmdData = WFS_IDC_TRACK1 | WFS_IDC_TRACK2 | WFS_IDC_TRACK3;  
-                uint dwTimeOut = 30000; // Timeout (in milliseconds)
 
-                // Call WFSAsyncExecute to send the command to the service provider
-                int hResult = WFSAsyncExecute(hService, dwCommand, lpCmdData, dwTimeOut, this.Handle);
+                IntPtr lpRequestID = IntPtr.Zero;
+                
+                // Set lpCmdData as the combination of the tracks
+                uint lpCmdData = 7; // 7 = 00000001 | 00000010 | 00000100
+
+                uint dwCommand = 0xCF;  // Example command, use the correct one for your device
+                uint dwTimeOut = 30000; // Timeout in milliseconds (30 seconds)
+
+                IntPtr hWnd = this.Handle; // This refers to the window handle, which you need to pass
+
+                // Call the WFSAsyncExecute function
+                int hResult = WFSAsyncExecute(hService, dwCommand, lpCmdData, dwTimeOut, hWnd, ref lpRequestID);
 
                 if (hResult == 0) // WFS_SUCCESS
                 {
-                    WFSAsyncExecuteResult.Text = $"WFSAsyncExecute succeeded. Request ID: ";
+                    uint requestID = (uint)lpRequestID.ToInt32(); 
+                    WFSAsyncExecuteResult.Text = $"WFSAsyncExecute succeeded. Request ID: {requestID}";
                 }
                 else
                 {
