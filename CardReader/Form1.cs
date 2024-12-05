@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
+using System.Drawing.Text;
 
 namespace CardReader
 {
@@ -28,16 +29,16 @@ namespace CardReader
         private const uint EXECUTE_EVENTS = 0x00000008;
 
         //
-        private const uint WFS_IDC_TRACK1 = 0x00000001;
-        private const uint WFS_IDC_TRACK2 = 0x00000002;
-        private const uint WFS_IDC_TRACK3 = 0x00000004;
+        //private const uint WFS_IDC_TRACK1 = 0x00000001;
+        //private const uint WFS_IDC_TRACK2 = 0x00000002;
+        //private const uint WFS_IDC_TRACK3 = 0x00000004;
 
         // Importing the necessary functions from the DLLs
-        [DllImport(@"C:\Windows\SysWOW64\msxfs.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        [DllImport(@"C:\Windows\System32\msxfs.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public static extern int WFSStartUp(uint dwVersionsRequired, out WFSVersion lpWFSVersion);
 
 
-        [DllImport(@"C:\Windows\SysWOW64\msxfs.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        [DllImport(@"C:\Windows\System32\msxfs.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public static extern int WFSOpen(
             string lpszLogicalName,
             uint hApp,
@@ -50,17 +51,17 @@ namespace CardReader
             ref IntPtr lphService
         );
 
-        [DllImport(@"C:\Windows\SysWOW64\msxfs.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        [DllImport(@"C:\Windows\System32\msxfs.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public static extern int WFSRegister(IntPtr hService, uint dwEventClass, IntPtr hWndReg);
 
 
 
-        [DllImport(@"C:\Windows\SysWOW64\msxfs.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        [DllImport(@"C:\Windows\System32\msxfs.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern int WFSCreateAppHandle(out IntPtr lphApp);
 
 
 
-        [DllImport(@"C:\Windows\SysWOW64\msxfs.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        [DllImport(@"C:\Windows\System32\msxfs.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public static extern int WFSLock(IntPtr hService, uint dwTimeOut, out IntPtr lppResult);
 
         [StructLayout(LayoutKind.Sequential)]
@@ -73,14 +74,14 @@ namespace CardReader
             public uint uTimeout;         // Timeout duration
         }
 
-        [DllImport(@"C:\Windows\SysWOW64\msxfs.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        [DllImport(@"C:\Windows\System32\msxfs.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public static extern int WFSFreeResult(IntPtr lpResult);
 
 
         private IntPtr hService;
 
 
-        [DllImport(@"C:\Windows\SysWOW64\msxfs.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        [DllImport(@"C:\Windows\System32\msxfs.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public static extern int WFSGetInfo(
             IntPtr hService,
             uint dwCategory,
@@ -89,21 +90,21 @@ namespace CardReader
             out IntPtr lppResult
         );
 
-        [DllImport(@"C:\Windows\SysWOW64\msxfs.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        [DllImport(@"C:\Windows\System32\msxfs.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public static extern bool WFSIsBlocking();
 
-        [DllImport(@"C:\Windows\SysWOW64\msxfs.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        [DllImport(@"C:\Windows\System32\msxfs.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public static extern int WFSAsyncExecute(
             IntPtr hService,
             uint dwCommand,
-            uint lpCmdData,
+            IntPtr lpCmdData,
             uint dwTimeOut,
             IntPtr hWnd,
             ref IntPtr lpRequestID
         );
 
 
-
+        
 
         public Form1()
         {
@@ -373,26 +374,36 @@ namespace CardReader
                 return;
             }
 
+            IntPtr lpRequestID = IntPtr.Zero;
+            IntPtr lpCmdData = IntPtr.Zero;
+
+            // Define the track flags
+            const int WFS_IDC_TRACK1 = 0x0001;
+            const int WFS_IDC_TRACK2 = 0x0002;
+            const int WFS_IDC_TRACK3 = 0x0004;
+
+            // Combine the track flags
+            int combinedFlags = WFS_IDC_TRACK1 | WFS_IDC_TRACK2 | WFS_IDC_TRACK3;
+
+            // Allocate unmanaged memory for lpCmdData and copy combinedFlags
             try
             {
+                lpCmdData = Marshal.AllocHGlobal(sizeof(int));
+                Marshal.WriteInt32(lpCmdData, combinedFlags);
 
-                IntPtr lpRequestID = IntPtr.Zero;
-                
-                // Set lpCmdData as the combination of the tracks
-                uint lpCmdData = 7; // 7 = 00000001 | 00000010 | 00000100
-
-                uint dwCommand = 0xCF;  // Example command, use the correct one for your device
+                uint dwCommand = 0xCF;  // Example command, replace with the correct one for your device
                 uint dwTimeOut = 30000; // Timeout in milliseconds (30 seconds)
 
-                IntPtr hWnd = this.Handle; // This refers to the window handle, which you need to pass
+                IntPtr hWnd = this.Handle; // Window handle for the operation
 
                 // Call the WFSAsyncExecute function
                 int hResult = WFSAsyncExecute(hService, dwCommand, lpCmdData, dwTimeOut, hWnd, ref lpRequestID);
 
                 if (hResult == 0) // WFS_SUCCESS
                 {
-                    uint requestID = (uint)lpRequestID.ToInt32(); 
+                    uint requestID = (uint)lpRequestID.ToInt32();
                     WFSAsyncExecuteResult.Text = $"WFSAsyncExecute succeeded. Request ID: {requestID}";
+
                 }
                 else
                 {
@@ -402,6 +413,23 @@ namespace CardReader
             catch (Exception ex)
             {
                 WFSAsyncExecuteResult.Text = $"Error during WFSAsyncExecute: {ex.Message}";
+            }
+            finally
+            {
+                // Free unmanaged memory
+                if (lpCmdData != IntPtr.Zero)
+                {
+                    Marshal.FreeHGlobal(lpCmdData);
+                }
+            }
+        }
+
+        public void OnExecuteEvent(uint requestID, int dwEventID)
+        {
+            if (dwEventID == 203)
+            {
+                WFSAsyncExecuteResult.Text = "Card inserted.";
+                
             }
         }
     }
